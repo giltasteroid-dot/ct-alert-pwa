@@ -1,0 +1,17 @@
+{
+  "id": "/ct-alert-pwa/",
+  "name": "CardTrader Alert",
+  "short_name": "CT Alert",
+  "description": "Monitoraggio prezzi carte CardTrader",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0B0F0E",
+  "theme_color": "#0B0F0E",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

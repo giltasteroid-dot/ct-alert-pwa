@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0B0F0E">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>CardTrader Alert</title>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #0B0F0E; font-family: Arial, sans-serif; }
+    #frame { position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: 0; display: none; }
+    #setup { display: none; color: #E6F1EF; padding: 32px 24px; max-width: 480px; margin: 0 auto; }
+    #setup h1 { color: #3DDC97; font-size: 20px; }
+    #setup p { font-size: 14px; line-height: 1.6; color: #A7B3AF; }
+    #setup input { width: 100%; box-sizing: border-box; padding: 12px; font-size: 14px; border-radius: 4px; border: 1px solid #2A3632; background: #1C2422; color: #E6F1EF; }
+    #setup button { margin-top: 14px; width: 100%; padding: 12px; font-size: 14px; font-weight: bold; border: 0; border-radius: 4px; background: #3DDC97; color: #0B0F0E; }
+    #errore { color: #E5705B; font-size: 13px; margin-top: 10px; min-height: 18px; }
+  </style>
+</head>
+<body>
+
+  <div id="setup">
+    <h1>CardTrader Alert</h1>
+    <p>Prima configurazione: incolla qui l'URL della tua web app Google Apps Script (quello che finisce con <b>/exec</b>). Lo chiederò solo questa volta.</p>
+    <input type="url" id="urlInput" placeholder="https://script.google.com/macros/s/.../exec">
+    <button onclick="salvaUrl()">Salva e apri</button>
+    <div id="errore"></div>
+  </div>
+
+  <iframe id="frame" allow="clipboard-write"></iframe>
+
+  <script>
+    var CHIAVE = 'cta_url';
+
+    function leggiUrl() {
+      try { return localStorage.getItem(CHIAVE); } catch (e) { return null; }
+    }
+
+    function salvaUrl() {
+      var v = document.getElementById('urlInput').value.trim();
+      if (v.indexOf('https://script.google.com/') !== 0) {
+        document.getElementById('errore').textContent = "L'URL deve iniziare con https://script.google.com/";
+        return;
+      }
+      try { localStorage.setItem(CHIAVE, v); } catch (e) {}
+      avvia();
+    }
+
+    function avvia() {
+      var url = leggiUrl();
+      if (!url) {
+        document.getElementById('setup').style.display = 'block';
+        document.getElementById('frame').style.display = 'none';
+        return;
+      }
+      document.getElementById('setup').style.display = 'none';
+      var f = document.getElementById('frame');
+      f.src = url;
+      f.style.display = 'block';
+    }
+
+    // Per cambiare URL in futuro: apri la pagina aggiungendo ?reset=1
+    if (location.search.indexOf('reset=1') !== -1) {
+      try { localStorage.removeItem(CHIAVE); } catch (e) {}
+      location.replace(location.pathname);
+    } else {
+      avvia();
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
